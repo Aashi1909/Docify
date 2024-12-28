@@ -1,21 +1,17 @@
 import logo from '../images/logo.png'
-import { FaUser } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
-import { FaPhone } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import rightIMG from '../images/SignUpRight.png'
+import rightIMG from '../images/loginRight.png'
 import { useState } from "react";
 
 
 
 
 const Signup = () => {
-  const[username, setUsername] = useState("")
   const[email, setEmail] = useState("")
   const[password, setPassword] = useState("")
-  const[phone, setPhone] = useState("")
   const[error, setError] = useState("")
   return (
     <>
@@ -24,15 +20,6 @@ const Signup = () => {
         <div className='left w-[30%] flex flex-col ml-[100px] '>
             <img className='w-[250px]' src={logo} alt="" />
             <form className=" pl-3 mt-5 "action=''>
-                <div className='inputContainer'>
-                    <p className='text-[15px] text-black'>Username</p>
-                    <div className='inputBox w-[100%]'>
-                      <i><FaUser/></i>
-                      <input type='text' placeholder='Username' id='username' name='username' onChange={(e)=>{setUsername(e.target.value)}} value={username} required />
-
-                    </div>
-                </div>
-                
                 <div className='inputContainer'>
                     <p className='text-[15px] text-black'>Email</p>
                     <div className='inputBox w-[100%]'>
@@ -50,16 +37,8 @@ const Signup = () => {
 
                     </div>
                 </div>
-                <div className='inputContainer'>
-                    <p className='text-[15px] text-black'>Phone</p>
-                    <div className='inputBox w-[100%]'>
-                      <i><FaPhone/></i>
-                      <input type='phone' placeholder='Phone' id='Phone' name='Phone' onChange={(e)=>{setPhone(e.target.value)}} value={phone} required />
-
-                    </div>
-                </div>
                 <p className='text-red-500 text-[15px] my-2'>{error}</p>
-                <p>Already have an Account? <Link to="/login" className='text-blue-500' >Login</Link></p>
+                <p>Dont have an Account? <Link to="/signup" className='text-blue-500' >Signup</Link></p>
                 <button className='p-[10px] bg-green-500 transition-all hover:bg-green-700 text-white rounded-lg w-full border-0'>SignUp</button>
              
 
@@ -67,7 +46,7 @@ const Signup = () => {
 
         </div>
         <div className='right flex items-end justify-end'>
-          <img src={rightIMG} alt='' className='h-full ' />
+          <img src={rightIMG} alt='' className='w-[45vw] ' />
 
         </div>
         </div>

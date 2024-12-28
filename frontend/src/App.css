@@ -1,3 +1,9 @@
+body{
+    overflow-x: hidden;
+}
+html{
+    overflow-x:hidden ;
+}
 .inputBox{
     background-color: #EAEAEA;
     display: flex;
@@ -21,5 +27,9 @@
     margin-left: 10px;
 }
 .inputContainer{
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+}
+.right{
+    width: calc(100% - 30%);
+
 }

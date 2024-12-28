@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from "./pages/Home"
 import NoPage from "./pages/NoPage"
 import Signup from "./pages/Signup"
+import Login from "./pages/Login"
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />}/>
         <Route path="/signup" element={<Signup />}/>
+        <Route path="/login" element={<Login />}/>
           <Route path="*" element={<NoPage />}/>
       </Routes>
     </BrowserRouter>
