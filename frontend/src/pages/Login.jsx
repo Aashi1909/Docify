@@ -38,7 +38,7 @@ const Signup = () => {
                     </div>
                 </div>
                 <p className='text-red-500 text-[15px] my-2'>{error}</p>
-                <p>Dont have an Account? <Link to="/signup" className='text-blue-500' >Signup</Link></p>
+                <p>Dont have an Account? <Link to="/signUp" className='text-blue-500' >Signup</Link></p>
                 <button className='p-[10px] bg-green-500 transition-all hover:bg-green-700 text-white rounded-lg w-full border-0'>SignUp</button>
              
 

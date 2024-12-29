@@ -4,26 +4,55 @@ import { FaEye } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaPhone } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 import rightIMG from '../images/SignUpRight.png'
 import { useState } from "react";
+import { api_base_url } from '../Helper';
 
 
 
 
 const Signup = () => {
+  const navigate = useNavigate()
   const[username, setUsername] = useState("")
   const[email, setEmail] = useState("")
   const[password, setPassword] = useState("")
   const[phone, setPhone] = useState("")
   const[error, setError] = useState("")
+
+  const createUser = (e) =>{
+    e.preventDefault()
+    fetch(api_base_url + "/signUp", {
+      mode:"cors",
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        username:username,
+        email:email,
+        password:password,        
+        phone:phone
+      })
+    }).then((res) => res.json())
+    .then((data) => {
+      if(data.success == false)
+      {
+        setError(data.message)
+      }
+      else{
+        navigate("/login")
+      }
+    })
+
+  }
   return (
     <>
     <div className='flex overflow-hidden items-center w-screen justify-center flex-col h-screen bg-[#F0F0F0]'>
         <div className='flex w-full items-center '>
         <div className='left w-[30%] flex flex-col ml-[100px] '>
             <img className='w-[250px]' src={logo} alt="" />
-            <form className=" pl-3 mt-5 "action=''>
+            <form className=" pl-3 mt-5 "action='' onSubmit={createUser}>
                 <div className='inputContainer'>
                     <p className='text-[15px] text-black'>Username</p>
                     <div className='inputBox w-[100%]'>
