@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var userModel = require("../models/userModel")
 var bcrypt = require("bcryptjs")
+var jwt = require("jsonwebtoken")
+
+const secret = "secret";
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -29,4 +32,20 @@ router.post("/signUp", async(req, res) => {
   })
   }
 })
+
+router.post("/login", async(req, res) =>{
+  let {email,password} = req.body;
+  let existedUser = await userModel.findOne({email:email});
+  if(!existedUser){
+    return res.json({success:false, message:"Invalid Email"})
+  }
+  let correctPassowrd = await bcrypt.compare(password, existedUser.password);
+  if(!correctPassowrd){
+    return res.json({success:false, message:"Incorrect password"})
+  }
+  else{
+    var token =  jwt.sign({email:existedUser.email, userId:existedUser._id}, secret);
+    return res.json({success:true, message:"Login successful", userId : existedUser._id, token:token})
+  }
+} )
 module.exports = router;
