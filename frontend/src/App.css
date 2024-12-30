@@ -31,5 +31,24 @@ html{
 }
 .right{
     width: calc(100% - 30%);
-
+}
+.btnBlue{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    color: white;
+    min-width: 120px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #3B82F6;
+    transition: all 0.3s ease;
+    gap: 5px;
+    
+}
+.btnBlue:hover{
+    background-color: #2563eb;
+}
+.btnBlue i{
+    font-size: 25px;
 }
