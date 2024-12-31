@@ -5,7 +5,7 @@ import Home from "./pages/Home"
 import NoPage from "./pages/NoPage"
 import Signup from "./pages/Signup"
 import Login from "./pages/Login"
-
+import CreateDocs from "./pages/createDocs"
 const App = () => {
   return (
     <>
@@ -14,6 +14,7 @@ const App = () => {
         <Route path="/" element={<Home />}/>
         <Route path="/signup" element={<Signup />}/>
         <Route path="/login" element={<Login />}/>
+        <Route path="/createDocs/:docsId" element={<CreateDocs />}/>
           <Route path="*" element={<NoPage />}/>
       </Routes>
     </BrowserRouter>

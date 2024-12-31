@@ -52,3 +52,6 @@ html{
 .btnBlue i{
     font-size: 25px;
 }
+.jodit-wysiwyg{
+    min-height: 450px !important;
+}
