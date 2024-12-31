@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 const Docs = ({docs}) => {
   return (
     <>
-    <div className="docs cursor-pointer rounded-lg flex items-center mt-3 justify-between px-[100px] bg-[#F0F0F0] transition-all hover:bg-[#DCDCDC]">
+    <div className="docs cursor-pointer rounded-lg flex items-center mt-3 justify-between p-[10px] bg-[#F0F0F0] transition-all hover:bg-[#DCDCDC]">
         <div className="docsleft flex items-center gap-3">
             <img src={docsIcon} alt="" />
             <div>
@@ -13,7 +13,7 @@ const Docs = ({docs}) => {
             </div>
         </div>
         <div className="docsright">
-            <i className = "delete text-[35px] text-red-500 cursor-pointer transition-all hover:text-red-600"><MdDelete /></i>
+            <i className = "delete text-[40px] text-red-500 cursor-pointer transition-all hover:text-red-600"><MdDelete /></i>
         </div>
 
     </div>
