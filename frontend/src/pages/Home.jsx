@@ -3,7 +3,6 @@ import { IoMdAdd } from "react-icons/io";
 import Docs from "../components/Docs";
 import { MdOutlineTitle } from "react-icons/md";
 import { useState } from "react";
-import deleteImg from "../images/delete.png";
 const Home = () => {
   const [isCreateModelShow, setIsCreateModelShow] = useState(false);
   return (
@@ -59,18 +58,12 @@ const Home = () => {
             </div>
           </div>
         </>
-      ) : 
+      ) : (
         ""
-      }
-      <div className="deleteDocsModelContainer fixed top-0 left-0 right-0 bottom-0 bg-[rgb(0,0,0,0.3)] w-screen h-[screen] flex flex-col items-center justify-center">
-      <div className="deleteModel bg-[#fff] p-[15px] rounded-lg w-[35vw] h-[30vh]">
-        <div className="flex items-center gap-3">
-          <img src="{deleteImg}" alt="" />
+      )}
 
-        </div>
-      </div>
-
-      </div>
+     
+      
     </>
   );
 };
