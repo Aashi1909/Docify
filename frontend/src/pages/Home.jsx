@@ -3,14 +3,51 @@ import { IoMdAdd } from "react-icons/io";
 import Docs from "../components/Docs";
 import { MdOutlineTitle } from "react-icons/md";
 import { useState } from "react";
+import { api_base_url } from '../Helper';
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
   const [isCreateModelShow, setIsCreateModelShow] = useState(false);
+  const[title, setTitle] = useState(" ");
+  const[error, setError] = useState(" ");
+
+  const navigate = useNavigate("")
+
+  const createDoc = () => {
+    if(title === "") {
+      setError("Please enter title");
+    }
+    else{
+      fetch(api_base_url + "/createDoc",{
+        mode: "cors",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          docName: title,
+          userId: localStorage.getItem("userId")
+        })
+      }).then(res=>res.json()).then(data => {
+        if(data.success) {
+          setIsCreateModelShow(false);
+          navigate(`/createDocs/${data.docId}`)
+        }
+        else{
+          setError(data.message);
+        }
+      })
+    }
+  }
   return (
     <>
       <Navbar />
       <div className="flex items-center justify-between w-[full] px-[100px]">
         <h3 className="mt-7 mb-3 text-3xl">All Documents</h3>
-        <button className="btnBlue" onClick={() => setIsCreateModelShow(true)}>
+        <button className="btnBlue" onClick={() => {
+          setIsCreateModelShow(true)
+          document.getElementById("title").focus()
+        }}>
           <i>
             <IoMdAdd />
           </i>
@@ -39,13 +76,15 @@ const Home = () => {
                     placeholder="Title"
                     id="title"
                     name="title"
+                    onChange={(e) => setTitle(e.target.value)}
+                    value={title}
                     required
                   />
                 </div>
               </div>
 
               <div className="flex items-center gap-2 justify-between w-full ">
-                <button className="btnBlue ! min-w-[48%]">
+                <button className="btnBlue ! min-w-[48%]" onClick={createDoc}>
                   Create New Document
                 </button>
                 <button

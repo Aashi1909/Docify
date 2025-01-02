@@ -3,6 +3,7 @@ var router = express.Router();
 var userModel = require("../models/userModel")
 var bcrypt = require("bcryptjs")
 var jwt = require("jsonwebtoken")
+var docModel = require("../models/docModel")
 
 const secret = "secret";
 /* GET home page. */
@@ -47,5 +48,22 @@ router.post("/login", async(req, res) =>{
     var token =  jwt.sign({email:existedUser.email, userId:existedUser._id}, secret);
     return res.json({success:true, message:"Login successful", userId : existedUser._id, token:token})
   }
-} )
+})
+
+router.post("/createDoc", async (req, res) => {
+  let {userId,docName} = req.body;
+  let user = userModel.findById(userId);
+  if(user){
+    let doc = await docModel.create({
+      uploadedBy:userId,
+      title:docName
+    });
+
+    return res.json({success:true,message:"Document created successfully",docId:doc._id});
+  }
+  else{
+    return res.json({success:false,message:"Invalid user"})
+  }
+});
+
 module.exports = router;
