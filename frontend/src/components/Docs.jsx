@@ -7,15 +7,43 @@ import { useState } from "react";
 
 const Docs = ({docs}) => {
   const [isDeleteModelShow, setIsDeleteModelShow] = useState(false);
+  const[error, setError] = useState(" ");
+
+  const deleteDoc =(id, docID) =>{
+    let doc = document.getElementById(docID)
+    fetch(api_base_url + "/deleteDoc", {
+      mode:"cors",
+        method: "POST",
+        headers:{
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: localStorage.getItem("userId"),
+          docId: id,
+        })
+      })
+      .then(res => (res.json())
+      .then((data) =>{
+        if(data.success === false)
+        {
+          setError(data.message)
+        }
+        else{
+          setIsDeleteModelShow(false)
+          alert(data.message)
+          doc.remove();
+        }
+      })
+    )}
 
   return (
     <>
-    <div className="docs cursor-pointer rounded-lg flex items-center mt-3 justify-between p-[10px] bg-[#F0F0F0] transition-all hover:bg-[#DCDCDC]">
+    <div id="docID" className="docs cursor-pointer rounded-lg flex items-center mt-3 justify-between p-[10px] bg-[#F0F0F0] transition-all hover:bg-[#DCDCDC]">
         <div className="docsleft flex items-center gap-3">
             <img src={docsIcon} alt="" />
             <div>
-                <h3 className="text-[25px]">Tips and Tricks</h3>
-                <p className="text-[15px] text-[#808080]">Created in : 3July </p>
+                <h3 className="text-[25px]">{docs.title}</h3>
+                <p className="text-[15px] text-[#808080]">Created in : {new Date(docs.date).toDateString()} | Last Updated in: {new Date(docs.lastUpdate).toDateString()} </p>
             </div>
         </div>
         <div className="docsright">
@@ -39,8 +67,8 @@ const Docs = ({docs}) => {
               <p className="text-[14px] text-[#808080]">Delete / Cancel</p>
             </div>
           </div>
-          <div className="flex mt-4 px-[40px] items-center gap-2 justify-between w-full ">
-            <button className="p-[10px] bg-red-500 text-white rounded-lg border-0 cursor-pointer min-w-[40%]">
+          <div className="flex mt-4 px-[40px] items-center gap-2 justify-between w-full ">`
+            <button className="p-[10px] bg-red-500 text-white rounded-lg border-0 cursor-pointer min-w-[40%]" onClick={() =>{deleteDoc(docs._id, docID)}}>
               Delete Document
             </button>
             <button

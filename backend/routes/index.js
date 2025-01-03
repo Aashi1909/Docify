@@ -92,6 +92,30 @@ router.post("/getDoc", async(req, res)=>{
   else{
     return res.json({success: false, message:"Invalid User!"})
   }
-
 })
+
+router.post("/deleteDoc", async(req, res)=>{
+  let{userId, docId} = req.body
+  let user = userModel.findById(userId);
+  if(user){
+    let doc = await docModel.findByIdAndDelete(docId)
+    return res.json({success: true, message:"Document Deleted Successfully"})
+  }
+  else{
+    return res.json({success: false, message:"Invalid User!"})
+  }
+})
+
+router.post("/getAllDocs", async(req, res)=>{
+  let{userId} = req.body;
+  let user = userModel.findById(userId);
+  if(user){
+    let docs = await docModel.find({uploadedBy:userId})
+    return res.json({success: true, message:"Document fetched Successfully", docs:docs})
+  }
+  else{
+    return res.json({success: false, message:"Invalid User!"})
+  }
+})
+
 module.exports = router;

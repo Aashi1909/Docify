@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar";
 import { IoMdAdd } from "react-icons/io";
 import Docs from "../components/Docs";
 import { MdOutlineTitle } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api_base_url } from '../Helper';
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,8 @@ const Home = () => {
   const [isCreateModelShow, setIsCreateModelShow] = useState(false);
   const[title, setTitle] = useState(" ");
   const[error, setError] = useState(" ");
+
+  const[data, setData] = useState(null)
 
   const navigate = useNavigate("")
 
@@ -39,6 +41,27 @@ const Home = () => {
       })
     }
   }
+
+  const getData =()=>{
+    fetch(api_base_url +"/getAllDocs",{
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: localStorage.getItem("userId")
+      })
+    }).then(res=>res.json()).then(data => {
+      setData(data.docs)
+
+    })
+  }
+  useEffect(() =>{
+    getData()
+  }, [])
+
+  
   return (
     <>
       <Navbar />
@@ -56,7 +79,15 @@ const Home = () => {
       </div>
 
       <div className="allDocs px-[100px] mt-4">
-        <Docs />
+        {
+          data ? data.map((el,index)=>{
+            return (
+              <>
+                <Docs docs={el} docID={`doc -${index+1}`} />
+              </>
+            )
+          }) :""
+        }
       </div>
 
       {isCreateModelShow ? (
