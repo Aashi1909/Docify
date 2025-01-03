@@ -7,9 +7,6 @@ import rightIMG from '../images/loginRight.png'
 import { useState } from "react";
 import { api_base_url } from '../Helper';
 
-
-
-
 const Login = () => {
   const navigate = useNavigate();
   
@@ -35,7 +32,9 @@ const Login = () => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("userId", data.userId);
-        navigate("/")
+        setTimeout(() => {
+          navigate("/")
+        }, 10)
       }
       else{
         setError(data.message)

@@ -2,13 +2,13 @@ import React, { useState , useRef, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import JoditEditor from 'jodit-pro-react'
+import { api_base_url } from '../Helper';
 
 const CreateDocs = () => {
     let {docsId} = useParams()
     const editor = useRef(null)
     const [content, setContent] = useState("")
     const [error, setError] = useState("")
-    const[data, setData] = useState("")
 
 const updateDoc =() =>{
       fetch(api_base_url + "/uploadDoc", {

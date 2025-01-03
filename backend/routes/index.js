@@ -118,4 +118,26 @@ router.post("/getAllDocs", async(req, res)=>{
   }
 })
 
+
+router.post("/getUser", async(req, res)=>{
+  let{userId} = req.body;
+  let user = await userModel.findById(userId);
+  if(user){
+    return res.json({success: true, message:"User fetched Successfully", user:user})
+  }
+  else{
+    return res.json({success: false, message:"Invalid User!"})
+  }
+})
+
+router.post("/logout", async(req, res)=>{
+  let {userId} = req.body;
+  let user = await userModel.findById(userId);
+  if(user){
+    return res.json({success: true, message:"User logged out Successfully"})
+  }
+  else{
+    return res.json({success: false, message:"Invalid User!"})
+  }
+})
 module.exports = router;
