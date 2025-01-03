@@ -3,7 +3,7 @@ import "./App.css"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from "./pages/Home"
 import NoPage from "./pages/NoPage"
-import Signup from "./pages/Signup"
+import Signup from "./pages/SignUp"
 import Login from "./pages/Login"
 import CreateDocs from "./pages/createDocs"
 const App = () => {

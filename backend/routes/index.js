@@ -6,7 +6,6 @@ var jwt = require("jsonwebtoken")
 var docModel = require("../models/docModel")
 
 const secret = "secret";
-/* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
@@ -66,4 +65,33 @@ router.post("/createDoc", async (req, res) => {
   }
 });
 
+router.post("/uploadDoc", async(req, res) =>{
+  let{userId, docId, content} = req.body
+  let user = userModel.findOne(userId);
+  if(user){
+    let doc = await docModel.findByIdAndUpdate(docId, {content:content})
+    return res.json({success: true, message:"Document Uploaded Successfully"})
+  }
+  else{
+    return res.json({success: false, message:"Invalid User!"})
+  }
+})
+
+router.post("/getDoc", async(req, res)=>{
+  let{userId, docId} = req.body;
+  let user = userModel.findById(userId);
+  if(user){
+    let doc = await docModel.findById(docId);
+    if(doc){
+      return res.json({success:true, message:"Document fetched successfully", doc:doc})
+    }
+    else{
+      return res.json({success: false, message:"Invalid Document!"})
+    }
+  }
+  else{
+    return res.json({success: false, message:"Invalid User!"})
+  }
+
+})
 module.exports = router;

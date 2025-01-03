@@ -5,7 +5,7 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaPhone } from "react-icons/fa6";
 import { Link , useNavigate} from "react-router-dom";
-import rightIMG from '../images/SignUpRight.png'
+import rightIMG from '../images/signUpRight.png'
 import { useState } from "react";
 import { api_base_url } from '../Helper';
 
