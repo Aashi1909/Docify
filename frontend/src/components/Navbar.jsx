@@ -64,7 +64,7 @@ const Navbar = () => {
   }, [])
   return (
     <>
-    <div className="navbar flex items-center px-[100px] h-[90px] justify-between bg-[#F4F4F4]">
+    <div className="navbar flex items-center px-[100px] h-[70px] justify-between bg-[#F4F4F4]">
     <img src={logo} alt=" " />
     <div className="right flex items-end justify-end gap-4">
       <div className="inputBox w-[25vw]">

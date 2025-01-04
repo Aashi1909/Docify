@@ -1,14 +1,21 @@
-import React, { useState , useRef, useEffect} from 'react'
+import { useState , useRef, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import JoditEditor from 'jodit-pro-react'
 import { api_base_url } from '../Helper';
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+
+
 
 const CreateDocs = () => {
     let {docsId} = useParams()
     const editor = useRef(null)
     const [content, setContent] = useState("")
     const [error, setError] = useState("")
+
+    const navigate = useNavigate("")
+
 
 const updateDoc =() =>{
       fetch(api_base_url + "/uploadDoc", {
@@ -25,10 +32,27 @@ const updateDoc =() =>{
       }).then(res => (res.json()).then((data) =>{
         if(data.success === false)
         {
-          setError(data.message)
+          Swal.fire({
+            title: 'Error!',
+            text: data.message,
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#d33', 
+
+          })
         }
         else{
-          setError("")
+          Swal.fire({
+            title: 'Success!',
+            text: 'Document saved successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#007bff',
+          }).then(() => {
+            navigate('/');
+          });
+          navigate("/")
+          
         }
 
       })
@@ -53,7 +77,7 @@ const getContent = () =>{
           setError(data.message)
         }
         else{
-          setContent(data.doc.content)
+          setContent(data.doc.content || '' )
         }
       })
     )}
@@ -65,11 +89,18 @@ const getContent = () =>{
   return (
     <>
     <Navbar />
-    <div className='px-[100px] mt-4'>
-    <JoditEditor ref={editor} value={content} tabIndex={1} onChange={e=> {
+    <div className='px-[80px] mt-2'>
+    <JoditEditor ref={editor} value={content} config={{placeholder: 'Start typing...', }} tabIndex={1} onBlur={e=> {
       setContent(e)
-      updateDoc();
     }} />
+     <div className="mt-3">
+          <button
+            onClick={updateDoc}
+            className="bg-blue-500 text-white px-4 py-2 w-[100px] rounded hover:bg-blue-600"
+          >
+            Save
+          </button>
+        </div>
     </div>
     </>
   )
