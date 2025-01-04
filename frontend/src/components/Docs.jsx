@@ -4,6 +4,8 @@ import { MdDelete } from "react-icons/md";
 import deleteImg from "../images/delete.png"
 import { api_base_url } from '../Helper';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 
 const Docs = ({ docs }) => {
   const [error, setError] = useState("");
@@ -34,7 +36,12 @@ const Docs = ({ docs }) => {
       } else {
         setIsDeleteModelShow(false);
         setTimeout(() => {
-          alert(data.message);
+          Swal.fire({
+            title: 'Success!',
+            text: 'Document deleted successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          })
         }, 100);
         doc.remove();
       }
@@ -53,7 +60,7 @@ const Docs = ({ docs }) => {
           <div>
             <h3 className='text-[20px]'>{docs.title}</h3>
             <p className='text-[14px] text-[#808080]'>
-              Created In : {new Date(docs.date).toDateString()} | Last Updated : {new Date(docs.lastUpdate).toDateString()}
+              <strong >Created On : </strong>{new Date(docs.date).toDateString()} | <strong>Last Updated :</strong> {new Date(docs.lastUpdate).toDateString()}
             </p>
           </div>
         </div>

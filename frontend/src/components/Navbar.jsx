@@ -4,11 +4,15 @@ import Avatar from 'react-avatar';
 import { api_base_url } from "../Helper";
 import { useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { IoMdLogOut } from "react-icons/io";
+
 
 
 const Navbar = () => {
   const [data, setData] = useState("")
   const[error, setError] = useState(null)
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -59,27 +63,52 @@ const Navbar = () => {
     })
   }
 
+  const toggleDropdown = () => {
+    setDropdownVisible((prev) => !prev);
+  }
+
   useEffect(() => {
     getUser()
   }, [])
   return (
     <>
-    <div className="navbar flex items-center px-[100px] h-[70px] justify-between bg-[#F4F4F4]">
-    <img src={logo} alt=" " />
-    <div className="right flex items-end justify-end gap-4">
-      <div className="inputBox w-[25vw]">
-        <i><FaSearch /></i>
-        <input type="text" placeholder="Search Here...." />
-      </div>
+      <div className="navbar flex items-center px-[100px] h-[70px] justify-between bg-[#F4F4F4]">
+        <img src={logo} alt="Logo" />
+        <div className="right flex items-end justify-end gap-4">
+          <div className="inputBox w-[25vw] relative">
+            <i>
+              <FaSearch />
+            </i>
+            <input type="text" placeholder="Search Here...." />
+          </div>
 
-      <button className="p-[10px] min-w-[120px] bg-red-500 text-white rounded-lg border-0 transition-all hover:bg-red-600" onClick={logout}>Logout</button>
-      <Avatar name={data? data.username: ""} src={data? data.profilePic: " "} className="cursor-pointer" size="50" round= "50%"  />
- 
-    </div>
-    </div>
-      
+          <div className="relative">
+            {/* Avatar */}
+            <Avatar
+              name={data ? data.username : ""}
+              src={data ? data.profilePic : " "}
+              className="cursor-pointer"
+              size="50"
+              round="50%"
+              onClick={toggleDropdown}
+            />
+
+            {dropdownVisible && (
+              <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-50">
+                <ul className="py-2 w-40">
+                <li className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"onClick={logout}>
+                    <i><IoMdLogOut /></i>
+                    Logout
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </>
-  )
-}
+  );
+};
+
 
 export default Navbar
