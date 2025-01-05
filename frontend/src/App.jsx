@@ -5,6 +5,7 @@ import Home from "./pages/Home"
 import Signup from "./pages/SignUp"
 import Login from "./pages/Login"
 import CreateDocs from "./pages/createDocs"
+import Export from "./pages/Export"
 const App = () => {
 
   const isLoggedIn = localStorage.getItem("isLoggedIn") ;
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login" />}/>
         <Route path="/signup" element={<Signup />}/>
         <Route path="/login" element={ <Login />} />
+        <Route path="/export" element={ <Export />} />
         <Route path="/createDocs/:docsId" element={ isLoggedIn ?<CreateDocs /> :<Navigate to="/login" />}/>
       </Routes>
     </BrowserRouter>

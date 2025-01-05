@@ -1,0 +1,134 @@
+import { useState } from "react";
+import { FaFilePdf, FaFileWord } from "react-icons/fa";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import { api_base_url } from '../Helper';
+
+
+const FileConverter = () => {
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const uploadedFile = e.target.files[0];
+    setFile(uploadedFile);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files[0];
+    setFile(droppedFile);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleConvert = async(type) => {
+    if (!file) {
+      alert("Please upload a file first!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", type);
+
+    try {
+        const response = await fetch(api_base_url + "/convert", {
+        method: "POST",
+        body: formData,
+        });
+
+        if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${file.name.split(".")[0]}.${type.toLowerCase()}`;
+        link.click();
+        alert(`File successfully converted to ${type}!`);
+        } else {
+        const error = await response.json();
+        alert(error.error);
+        }
+    } catch (error) {
+        console.error("Conversion Error:", error);
+        alert("Failed to convert the file.");
+    }
+    };
+
+
+  return (
+    <>
+      <div className="h-screen flex flex-col">
+        <Navbar />
+
+        <div className="flex flex-1">
+          <div className=" bg-gray-100">
+            <Sidebar />
+          </div>
+
+          {/* Main Content */}
+          <div className="w-full p-6 overflow-y-auto">
+            <div className="flex items-center justify-between w-[full] ">
+              <h3 className="mt-7 mb-3 text-3xl">Export Documents</h3>
+            </div>
+
+            {/* Drag and Drop Area */}
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              style={{ height: "400px" }}
+              className="flex items-center mt-3 justify-center border-2 border-dashed border-blue-600 rounded-lg p-6 mb-4 text-gray-700 font-semibold "
+            >
+              <p className="text-center" style={{ fontSize: "25px" }}>
+                Drag and drop a file here, or{" "}
+                <label
+                  htmlFor="file-upload"
+                  className="text-blue-500 font-medium cursor-pointer"
+                >
+                  browse
+                </label>
+              </p>
+              <input
+                type="file"
+                id="file-upload"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </div>
+
+            {/* File Name Display */}
+            {file && (
+              <div className="mb-4 text-center text-gray-700">
+                <p className="text-sm">
+                  Selected File:{" "}
+                  <span className="font-medium">{file.name}</span>
+                </p>
+              </div>
+            )}
+
+            {/* Conversion Buttons */}
+            <div className="flex justify-between gap-4 mt-4">
+              <button
+                onClick={() => handleConvert("PDF")}
+                className="flex items-center justify-center w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+              >
+                <FaFilePdf className="mr-2" />
+                Convert to PDF
+              </button>
+
+              <button
+                onClick={() => handleConvert("DOCX")}
+                className="flex items-center justify-center w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+              >
+                <FaFileWord className="mr-2" />
+                Convert to Word
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+export default FileConverter;

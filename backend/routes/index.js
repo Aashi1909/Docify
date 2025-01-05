@@ -4,8 +4,16 @@ var userModel = require("../models/userModel")
 var bcrypt = require("bcryptjs")
 var jwt = require("jsonwebtoken")
 var docModel = require("../models/docModel")
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+const { PDFDocument } = require("pdf-lib");
+const PizZip = require("pizzip");
+const Docxtemplater = require("docxtemplater");
 
 const secret = "secret";
+const upload = multer({ dest: "uploads/" });
+
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
@@ -138,6 +146,66 @@ router.post("/logout", async(req, res)=>{
   }
   else{
     return res.json({success: false, message:"Invalid User!"})
+  }
+})
+
+router.post("/convert", upload.single("file"), async(req, res)=>{
+  const file = req.file;
+  const {type} = req.body;
+  if(!file){
+    return res.json({success: false, message:"Please upload a file!"})
+  }
+  try{
+    if (type === "PDF") {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const text = fs.readFileSync(file.path, "utf-8");
+
+      // Embed a custom font
+      const fontBytes = fs.readFileSync(path.resolve(__dirname, "../fonts/Roboto-Regular.ttf"));
+      const customFont = await pdfDoc.embedFont(fontBytes);
+
+      // Draw text with custom font
+      page.drawText(text, {
+        x: 50,
+        y: page.getHeight() - 50,
+        size: 12,
+        font: customFont,
+        color: rgb(0, 0, 0),
+        lineHeight: 16,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      const pdfPath = `converted/${file.originalname.split(".")[0]}.pdf`;
+      fs.writeFileSync(pdfPath, pdfBytes);
+
+      return res.download(pdfPath, () => {
+        fs.unlinkSync(file.path);
+        fs.unlinkSync(pdfPath);
+      }); 
+    }
+    if(type === "DOCX"){
+      const text = fs.readFileSync(file.path, "utf-8");
+      const zip = new PizZip(text);
+      const doc = new Docxtemplater(zip);
+
+      doc.setData({content:text});
+      doc.render();
+      const buffer = doc.getZip().generate({ type: "nodebuffer" });
+      const docxPath = `converted/${file.originalname.split(".")[0]}.docx`;
+
+      fs.writeFileSync(docxPath, buffer);
+      return res.download(docxPath, () => {
+        fs.unlinkSync(file.path); // Clean up uploaded file
+        fs.unlinkSync(docxPath); // Clean up converted file
+      });
+    }
+
+    res.status(400).json({ error: "Invalid conversion type." });
+    
+  }catch (error) {
+    console.error("Conversion Error:", error);
+    res.status(500).json({ error: "Failed to convert the file." });
   }
 })
 module.exports = router;
