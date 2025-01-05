@@ -1,6 +1,6 @@
 import logo from '../images/logo.png'
 import { FaUser } from "react-icons/fa";
-import { FaEye } from "react-icons/fa";
+import { FaEye , FaEyeSlash} from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaPhone } from "react-icons/fa6";
@@ -19,6 +19,9 @@ const Signup = () => {
   const[password, setPassword] = useState("")
   const[phone, setPhone] = useState("")
   const[error, setError] = useState("")
+
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const createUser = (e) =>{
     e.preventDefault()
@@ -74,8 +77,21 @@ const Signup = () => {
                     <p className='text-[15px] text-black'>Password</p>
                     <div className='inputBox w-[100%]'>
                       <i><RiLockPasswordFill/></i>
-                      <input type='password' placeholder='Password' id='Password' name='Password' onChange={(e)=>{setPassword(e.target.value)}} value={password} required />
-                      <i className='cursor-pointer !mr-3 !text-[25px]'><FaEye/></i>
+                      <input
+                      type={showPassword ? "text" : "password"} 
+                      placeholder="Password"
+                      id="Password"
+                      name="Password"
+                      onChange={(e) => setPassword(e.target.value)}
+                      value={password}
+                      required
+                    />
+                    <i
+                      className="cursor-pointer !mr-3 !text-[25px]"
+                      onClick={() => setShowPassword(!showPassword)} 
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </i>
 
                     </div>
                 </div>

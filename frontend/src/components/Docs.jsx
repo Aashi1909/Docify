@@ -65,7 +65,7 @@ const Docs = ({ docs }) => {
           </div>
         </div>
         <div className="docsRight">
-          <i onClick={() => { setIsDeleteModelShow(true) }} className="delete text-[30px] text-red-500 cursor-pointer transition-all hover:text-red-600"><MdDelete /></i>
+          <i onClick={() => { setIsDeleteModelShow(true) }} className="delete text-[40px] text-red-500 cursor-pointer transition-all hover:text-red-600"><MdDelete /></i>
         </div>
       </div>
 

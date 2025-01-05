@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import { IoMdAdd } from "react-icons/io";
 import Docs from "../components/Docs";
 import { MdOutlineTitle } from "react-icons/md";
@@ -64,8 +65,17 @@ const Home = () => {
   
   return (
     <>
+     <div className="h-screen flex flex-col">
       <Navbar />
-      <div className="flex items-center justify-between w-[full] px-[100px]">
+
+      <div className="flex flex-1">
+        <div className=" bg-gray-100">
+          <Sidebar />
+        </div>
+
+        {/* Main Content */}
+        <div className="w-full p-6 overflow-y-auto">
+      <div className="flex items-center justify-between w-[full] px-[80px]">
         <h3 className="mt-7 mb-3 text-3xl">All Documents</h3>
         <button className="btnBlue" onClick={() => {
           setIsCreateModelShow(true)
@@ -78,7 +88,7 @@ const Home = () => {
         </button>
       </div>
 
-      <div className="allDocs px-[100px] mt-4">
+      <div className="allDocs px-[80px] mt-4">
         {
           data ? data.map((el,index)=>{
             return (
@@ -132,6 +142,9 @@ const Home = () => {
         ""
       )}
 
+    </div>
+    </div>
+    </div>
      
       
     </>

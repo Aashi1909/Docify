@@ -14,7 +14,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login" />}/>
         <Route path="/signup" element={<Signup />}/>
-        <Route path="/login" element={<Login />}/>
+        <Route path="/login" element={ <Login />} />
         <Route path="/createDocs/:docsId" element={ isLoggedIn ?<CreateDocs /> :<Navigate to="/login" />}/>
       </Routes>
     </BrowserRouter>
