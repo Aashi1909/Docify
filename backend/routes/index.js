@@ -7,9 +7,12 @@ var docModel = require("../models/docModel")
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const { PDFDocument } = require("pdf-lib");
-const PizZip = require("pizzip");
-const Docxtemplater = require("docxtemplater");
+const pdfParse = require('pdf-parse'); // For text extraction
+
+const { Document, Packer, Paragraph } = require('docx'); // For generating DOCX
+
+const mammoth = require("mammoth");
+const PDFKit = require("pdfkit");
 
 const secret = "secret";
 const upload = multer({ dest: "uploads/" });
@@ -149,63 +152,60 @@ router.post("/logout", async(req, res)=>{
   }
 })
 
-router.post("/convert", upload.single("file"), async(req, res)=>{
-  const file = req.file;
-  const {type} = req.body;
-  if(!file){
-    return res.json({success: false, message:"Please upload a file!"})
+const ensureDirectoryExists = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
-  try{
+};
+
+router.post("/convert", upload.single("file"), async (req, res) => {
+  const file = req.file;
+  const { type } = req.body;
+
+  console.log("TYPE", type);
+
+  if (!file) {
+    return res.json({ success: false, message: "Please upload a file!" });
+  }
+
+  try {
+    const convertedDir = path.resolve(__dirname, "../converted");
+    ensureDirectoryExists(convertedDir);
+
     if (type === "PDF") {
-      const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
-      const text = fs.readFileSync(file.path, "utf-8");
+      const docxBuffer = fs.readFileSync(file.path);
+      const { value: text } = await mammoth.extractRawText({ buffer: docxBuffer });
 
-      // Embed a custom font
-      const fontBytes = fs.readFileSync(path.resolve(__dirname, "../fonts/Roboto-Regular.ttf"));
-      const customFont = await pdfDoc.embedFont(fontBytes);
+      const pdfDoc = new PDFKit();
+      const pdfPath = path.join(convertedDir, `${file.originalname.split(".")[0]}.pdf`);
+      const writeStream = fs.createWriteStream(pdfPath);
 
-      // Draw text with custom font
-      page.drawText(text, {
-        x: 50,
-        y: page.getHeight() - 50,
-        size: 12,
-        font: customFont,
-        color: rgb(0, 0, 0),
-        lineHeight: 16,
+      pdfDoc.pipe(writeStream);
+      pdfDoc.fontSize(12).text(text, { width: 500, align: "left" });
+      pdfDoc.end();
+
+      writeStream.on("finish", () => {
+        return res.download(pdfPath, () => {
+          fs.unlinkSync(file.path);
+          fs.unlinkSync(pdfPath);
+        });
       });
 
-      const pdfBytes = await pdfDoc.save();
-      const pdfPath = `converted/${file.originalname.split(".")[0]}.pdf`;
-      fs.writeFileSync(pdfPath, pdfBytes);
-
-      return res.download(pdfPath, () => {
-        fs.unlinkSync(file.path);
-        fs.unlinkSync(pdfPath);
-      }); 
-    }
-    if(type === "DOCX"){
-      const text = fs.readFileSync(file.path, "utf-8");
-      const zip = new PizZip(text);
-      const doc = new Docxtemplater(zip);
-
-      doc.setData({content:text});
-      doc.render();
-      const buffer = doc.getZip().generate({ type: "nodebuffer" });
-      const docxPath = `converted/${file.originalname.split(".")[0]}.docx`;
-
-      fs.writeFileSync(docxPath, buffer);
-      return res.download(docxPath, () => {
-        fs.unlinkSync(file.path); // Clean up uploaded file
-        fs.unlinkSync(docxPath); // Clean up converted file
+      writeStream.on("error", (error) => {
+        console.error("Write Stream Error:", error);
+        res.status(500).json({ error: "Failed to create PDF file." });
       });
-    }
-
-    res.status(400).json({ error: "Invalid conversion type." });
+    } 
+      
+    else {
+      res.status(400).json({ error: "Invalid conversion type." });
     
-  }catch (error) {
+  }
+} catch (error) {
     console.error("Conversion Error:", error);
     res.status(500).json({ error: "Failed to convert the file." });
   }
-})
+});
+
+
 module.exports = router;

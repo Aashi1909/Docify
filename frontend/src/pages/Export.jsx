@@ -107,22 +107,13 @@ const FileConverter = () => {
               </div>
             )}
 
-            {/* Conversion Buttons */}
-            <div className="flex justify-between gap-4 mt-4">
+            <div className="mt-4">
               <button
                 onClick={() => handleConvert("PDF")}
-                className="flex items-center justify-center w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+                className="flex items-center justify-center w-60 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
               >
                 <FaFilePdf className="mr-2" />
                 Convert to PDF
-              </button>
-
-              <button
-                onClick={() => handleConvert("DOCX")}
-                className="flex items-center justify-center w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
-              >
-                <FaFileWord className="mr-2" />
-                Convert to Word
               </button>
             </div>
           </div>
