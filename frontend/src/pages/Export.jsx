@@ -88,6 +88,7 @@ const FileConverter = () => {
                 >
                   browse
                 </label>
+                <p className="text-gray-600" style={{fontSize: "18px"}}>(Upload only doc file)</p>
               </p>
               <input
                 type="file"
@@ -107,15 +108,18 @@ const FileConverter = () => {
               </div>
             )}
 
-            <div className="mt-4">
-              <button
-                onClick={() => handleConvert("PDF")}
-                className="flex items-center justify-center w-60 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-              >
-                <FaFilePdf className="mr-2" />
-                Convert to PDF
-              </button>
+            <div className="flex justify-center items-center ">
+              <div className="mt-4">
+                <button
+                  onClick={() => handleConvert("PDF")}
+                  className="flex items-center justify-center w-60 bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition"
+                >
+                  <FaFilePdf className="mr-2" />
+                  Convert to PDF
+                </button>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
