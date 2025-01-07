@@ -12,7 +12,19 @@ const FileConverter = () => {
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
-    setFile(uploadedFile);
+    if(uploadedFile){
+      if(uploadedFile.endsWith(".doc")){
+        setFile(uploadedFile);
+      }else{
+        Swal.fire({
+          icon: "error",
+          title: "Unsupported File Format",
+          text: "Please upload a .doc file only!",
+          confirmButtonText: "OK",
+        });
+        e.target.value = null; 
+      }
+    }
   };
 
   const handleDrop = (e) => {
@@ -126,7 +138,7 @@ const FileConverter = () => {
                   onClick={() => handleConvert("PDF")}
                   className="flex items-center justify-center w-60 bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition"
                 >
-                  <FaFilePdf className="mr-2" />
+                  <FaFilePdf className="mr-2" style={{fontSize: "25px"}} />
                   Convert to PDF
                 </button>
               </div>
