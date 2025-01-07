@@ -1,15 +1,21 @@
 import React, { useState } from 'react'
 import docsIcon from "../images/docsIcon.png"
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdMoreVert } from "react-icons/md";
+import { FaLink } from "react-icons/fa";
+import {MdAttachEmail} from "react-icons/md"
 import deleteImg from "../images/delete.png"
 import { api_base_url } from '../Helper';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 
+
 const Docs = ({ docs }) => {
   const [error, setError] = useState("");
   const [isDeleteModelShow, setIsDeleteModelShow] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+
 
   // Generate a unique ID for each document item
   const docID = `doc-${docs._id}`;
@@ -65,7 +71,38 @@ const Docs = ({ docs }) => {
           </div>
         </div>
         <div className="docsRight">
-          <i onClick={() => { setIsDeleteModelShow(true) }} className="delete text-[40px] text-red-500 cursor-pointer transition-all hover:text-red-600"><MdDelete /></i>
+        <i ><MdMoreVert
+            className="cursor-pointer text-lg hover:text-gray-700"
+            onClick={() => setDropdownVisible(!dropdownVisible)}
+          />
+          </i>
+          {dropdownVisible && (
+            <div className="absolute right-0 bg-white shadow-lg rounded-lg w-40">
+              <ul className="text-sm text-gray-700">
+                <li
+                  className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all"
+                  onClick={() => setIsDeleteModelShow(true)}
+                >
+                  <i className="text-[20px] text-red-500 transition-all hover:text-red-600">
+                    <MdDelete />
+                  </i>
+                  <span className="text-gray-800">Delete</span>
+                </li>
+                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all">
+                  <i className="text-[20px] text-blue-500 transition-all hover:text-blue-600">
+                    <FaLink />
+                  </i>
+                  <span className="text-gray-800">Generate Link</span>
+                </li>
+                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all">
+                  <i className="text-[20px] text-green-500 transition-all hover:text-green-600">
+                    <MdAttachEmail />
+                  </i>
+                  <span className="text-gray-800">Share via Email</span>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
