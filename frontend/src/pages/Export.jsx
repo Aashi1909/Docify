@@ -3,6 +3,8 @@ import { FaFilePdf, FaFileWord } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { api_base_url } from '../Helper';
+import uploadImg from "../images/upload.jpg"
+
 
 
 const FileConverter = () => {
@@ -80,6 +82,12 @@ const FileConverter = () => {
               style={{ height: "400px" }}
               className="flex items-center mt-3 justify-center border-2 border-dashed border-blue-600 rounded-lg p-6 mb-4 text-gray-700 font-semibold "
             >
+             <div className="flex flex-col items-center">
+              <img
+                src={uploadImg}
+                alt=""
+                className="w-70 h-48 object-contain mb-4"
+              />
               <p className="text-center" style={{ fontSize: "25px" }}>
                 Drag and drop a file here, or{" "}
                 <label
@@ -88,8 +96,12 @@ const FileConverter = () => {
                 >
                   browse
                 </label>
-                <p className="text-gray-600" style={{fontSize: "18px"}}>(Upload only doc file)</p>
               </p>
+              <p className="text-gray-600" style={{ fontSize: "18px" }}>
+                (Upload only doc file)
+              </p>
+            </div>
+
               <input
                 type="file"
                 id="file-upload"
