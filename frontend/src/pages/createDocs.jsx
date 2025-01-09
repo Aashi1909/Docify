@@ -93,10 +93,10 @@ const getContent = () =>{
     <JoditEditor ref={editor} value={content} config={{placeholder: 'Start typing...', }} tabIndex={1} onBlur={e=> {
       setContent(e)
     }} />
-     <div className="mt-3">
+     <div className="mt-3 justify-center" style={{ display: 'flex' }}>
           <button
             onClick={updateDoc}
-            className="bg-blue-500 text-white px-4 py-2 w-[100px] rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-4 py-2 w-[20%] rounded hover:bg-blue-600"
           >
             Save
           </button>
