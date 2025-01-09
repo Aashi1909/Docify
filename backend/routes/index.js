@@ -7,9 +7,9 @@ var docModel = require("../models/docModel")
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const pdfParse = require('pdf-parse'); // For text extraction
+const pdfParse = require('pdf-parse'); 
+const crypto = require("crypto");
 
-const { Document, Packer, Paragraph } = require('docx'); // For generating DOCX
 
 const mammoth = require("mammoth");
 const PDFKit = require("pdfkit");
@@ -162,8 +162,6 @@ router.post("/convert", upload.single("file"), async (req, res) => {
   const file = req.file;
   const { type } = req.body;
 
-  console.log("TYPE", type);
-
   if (!file) {
     return res.json({ success: false, message: "Please upload a file!" });
   }
@@ -206,6 +204,36 @@ router.post("/convert", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Failed to convert the file." });
   }
 });
+
+const links = {};
+
+router.post("/generate-link", (req, res) =>{
+  const {docId} = req.body;
+  if(!docId){
+    return res.json({success: false, message:"Document is Required!"})
+  }
+    // Generate a unique hash
+  const BASE_URL = "https://docify.com/docs";
+  const uniqueHash = crypto.randomBytes(16).toString("hex");
+  const link = `${BASE_URL}/${uniqueHash}`;
+
+   // Save the link
+   links[uniqueHash] = docId;
+   res.json({success: true, message:"Link Generated Successfully", link:link})
+})
+// Get document by unique link
+router.get("/:hash", (req, res) => {
+  const { hash } = req.params;
+
+  const docId = links[hash];
+  if (!docId) {
+    return res.json({ success: false, message: "Invalid link!" });
+  }
+
+  // Redirect or return document data
+  res.json({ success: true, message: "Document found!", docId: docId });
+});
+
 
 
 module.exports = router;

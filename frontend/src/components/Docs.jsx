@@ -7,6 +7,7 @@ import deleteImg from "../images/delete.png"
 import { api_base_url } from '../Helper';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import LinkPopup from './LinkPopup';
 
 
 
@@ -14,6 +15,9 @@ const Docs = ({ docs }) => {
   const [error, setError] = useState("");
   const [isDeleteModelShow, setIsDeleteModelShow] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [generatedLink, setGeneratedLink] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
 
 
 
@@ -58,6 +62,39 @@ const Docs = ({ docs }) => {
     });
   };
 
+  const generateLink = async (docId) => {
+    try {
+      const response = await fetch(api_base_url + "/generate-link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          docId: docId,
+        }),
+      });
+  
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setGeneratedLink(data.link);
+        setIsPopupOpen(true); 
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: data.message || "Failed to generate the link",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Something went wrong. Please try again later.",
+      });
+    }
+  };
+  
+
   return (
     <>
       <div id={docID} className='docs cursor-pointer rounded-lg flex items-center mt-2 justify-between p-[10px] bg-[#F0F0F0] transition-all hover:bg-[#DCDCDC]'>
@@ -88,12 +125,18 @@ const Docs = ({ docs }) => {
                   </i>
                   <span className="text-gray-800">Delete</span>
                 </li>
-                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all">
+                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all" onClick={()=>generateLink(docs._id)}>
                   <i className="text-[20px] text-blue-500 transition-all hover:text-blue-600">
                     <FaLink />
                   </i>
                   <span className="text-gray-800">Generate Link</span>
                 </li>
+
+                <LinkPopup
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+                link={generatedLink}
+              />
                 <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all">
                   <i className="text-[20px] text-green-500 transition-all hover:text-green-600">
                     <MdAttachEmail />
