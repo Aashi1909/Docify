@@ -8,6 +8,8 @@ import { api_base_url } from '../Helper';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import LinkPopup from './LinkPopup';
+import EmailShare from "./EmailShare";
+
 
 
 
@@ -18,6 +20,14 @@ const Docs = ({ docs }) => {
   const [generatedLink, setGeneratedLink] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  const [isShareEmailModalOpen, setIsShareEmailModalOpen] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState(null); // Holds the selected document info.
+
+
+  const handleEmailClick = (doc) => {
+    setSelectedDoc(doc); // Set the selected document details.
+    setIsShareEmailModalOpen(true); // Open the modal.
+  };
 
 
 
@@ -137,12 +147,19 @@ const Docs = ({ docs }) => {
                 onClose={() => setIsPopupOpen(false)}
                 link={generatedLink}
               />
-                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all">
+                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all" onClick={() =>handleEmailClick(doc)}>
                   <i className="text-[20px] text-green-500 transition-all hover:text-green-600">
                     <MdAttachEmail />
                   </i>
                   <span className="text-gray-800">Share via Email</span>
                 </li>
+                {isShareEmailModalOpen && (
+                <EmailShare
+                isOpen={isShareEmailModalOpen}
+                onClose={() => setIsShareEmailModalOpen(false)}
+                doc={selectedDoc}
+              />
+            )}
               </ul>
             </div>
           )}

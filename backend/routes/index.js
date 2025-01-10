@@ -7,8 +7,9 @@ var docModel = require("../models/docModel")
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const pdfParse = require('pdf-parse'); 
 const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
 
 
 const mammoth = require("mammoth");
@@ -234,6 +235,42 @@ router.get("/:hash", (req, res) => {
   res.json({ success: true, message: "Document found!", docId: docId });
 });
 
+router.post("/share-via-email", async (req, res) => {
+  const { email, link, docId } = req.body;
+
+  if (!email || !link || !docId) {
+    return res.status(400).json({ success: false, message: "All fields are required!" });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "Gmail", 
+      auth: {
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS, 
+      },
+    });
+
+    // Email Content
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Shared Document",
+      text: `You have received a shared document. Access it using this link: ${link}`,
+      html: `
+        <p>You have received a shared document:</p>
+        <a href="${link}" style="color: blue; text-decoration: underline;">View Document</a>
+      `,
+    };
+
+    // Send Email
+    await transporter.sendMail(mailOptions);
+    return res.json({ success: true, message: "Email sent successfully!" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Failed to send email!" });
+  }
+});
 
 
 module.exports = router;
