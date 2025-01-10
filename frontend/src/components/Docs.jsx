@@ -13,7 +13,9 @@ import EmailShare from "./EmailShare";
 
 
 
+
 const Docs = ({ docs }) => {
+  console.log(docs, "aashidocsss")
   const [error, setError] = useState("");
   const [isDeleteModelShow, setIsDeleteModelShow] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -24,8 +26,8 @@ const Docs = ({ docs }) => {
   const [selectedDoc, setSelectedDoc] = useState(null); // Holds the selected document info.
 
 
-  const handleEmailClick = (doc) => {
-    setSelectedDoc(doc); // Set the selected document details.
+  const handleEmailClick = (docs) => {
+    setSelectedDoc(docs); // Set the selected document details.
     setIsShareEmailModalOpen(true); // Open the modal.
   };
 
@@ -147,7 +149,7 @@ const Docs = ({ docs }) => {
                 onClose={() => setIsPopupOpen(false)}
                 link={generatedLink}
               />
-                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all" onClick={() =>handleEmailClick(doc)}>
+                <li className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer transition-all" onClick={() =>handleEmailClick(docs)}>
                   <i className="text-[20px] text-green-500 transition-all hover:text-green-600">
                     <MdAttachEmail />
                   </i>
@@ -157,7 +159,7 @@ const Docs = ({ docs }) => {
                 <EmailShare
                 isOpen={isShareEmailModalOpen}
                 onClose={() => setIsShareEmailModalOpen(false)}
-                doc={selectedDoc}
+                docs={selectedDoc}
               />
             )}
               </ul>

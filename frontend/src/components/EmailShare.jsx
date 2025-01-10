@@ -1,71 +1,64 @@
 import React, { useState } from "react";
-import { MdClose } from "react-icons/md";
-import axios from "axios";
-import { api_base_url } from '../Helper';
+import { api_base_url } from "../Helper";
 
-
-const EmailShare = ({ isOpen, onClose, docLink, docId }) => {
+const EmailShareModal = ({ isOpen, onClose, docs }) => {
   const [email, setEmail] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [message, setMessage] = useState("");
 
-  const handleShare = async () => {
-    if (!email) {
-      setMessage("Email is required!");
-      return;
-    }
-
+  const handleSendEmail = async () => {
     setIsSending(true);
+
     try {
-      const response = await axios.post(api_base_url + "/share-via-email", {
-        email,
-        link: docLink,
-        docId,
+      // Call the share-via-email API
+      const response = await fetch(api_base_url + "/share-via-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, docId: docs._id }),
       });
 
-      if (response.data.success) {
-        setMessage("Email sent successfully!");
+      const data = await response.json();
+      if (data.success) {
+        alert("Email sent successfully!");
       } else {
-        setMessage(response.data.message || "Failed to send email.");
+        alert("Failed to send email: " + data.message);
       }
     } catch (error) {
-      setMessage("An error occurred. Please try again.");
+      alert("An error occurred while sending the email.");
     } finally {
       setIsSending(false);
+      onClose();
     }
   };
 
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Share Document</h3>
-          <button onClick={onClose}>
-            <MdClose size={20} />
-          </button>
-        </div>
+  return isOpen ? (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-md w-1/3">
+        <h2 className="text-lg font-semibold mb-4">Share Document via Email</h2>
         <input
           type="email"
-          placeholder="Enter email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          placeholder="Enter recipient's email"
+          className="w-full p-2 border border-gray-300 rounded mb-4"
         />
-        <button
-          onClick={handleShare}
-          className={`w-full p-2 text-white rounded-lg ${
-            isSending ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
-          }`}
-          disabled={isSending}
-        >
-          {isSending ? "Sending..." : "Send Email"}
-        </button>
-        {message && <p className="text-sm text-center mt-2">{message}</p>}
+        <div className="flex justify-end">
+          <button
+            className="px-4 py-2 bg-gray-200 rounded mr-2"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-4 py-2 bg-green-500 text-white rounded disabled:bg-green-300"
+            onClick={handleSendEmail}
+            disabled={isSending || !email}
+          >
+            {isSending ? "Sending..." : "Send Email"}
+          </button>
+        </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
-export default EmailShare;
+export default EmailShareModal;

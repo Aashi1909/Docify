@@ -9,14 +9,15 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-
-
+const dotenv = require('dotenv');
 
 const mammoth = require("mammoth");
 const PDFKit = require("pdfkit");
 
 const secret = "secret";
 const upload = multer({ dest: "uploads/" });
+
+dotenv.config(); 
 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -236,19 +237,36 @@ router.get("/:hash", (req, res) => {
 });
 
 router.post("/share-via-email", async (req, res) => {
-  const { email, link, docId } = req.body;
+  const { email, docId } = req.body;
+  console.log(email, docId, "entriexss");
 
-  if (!email || !link || !docId) {
+  if (!email || !docId) {
     return res.status(400).json({ success: false, message: "All fields are required!" });
   }
 
   try {
+    const response = await fetch("http://localhost:5000/generate-link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ docId }),
+    });
+
+    const linkData = await response.json();
+
+    if (!linkData.success) {
+      return res.status(500).json({ success: false, message: "Failed to generate document link!" });
+    }
+
+    const docLink = linkData.link;
+
     const transporter = nodemailer.createTransport({
       service: "Gmail", 
       auth: {
         user: process.env.EMAIL_USER, 
         pass: process.env.EMAIL_PASS, 
       },
+      logger: true,       // Logs the actions for better visibility
+      debug: true
     });
 
     // Email Content
@@ -256,10 +274,10 @@ router.post("/share-via-email", async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Shared Document",
-      text: `You have received a shared document. Access it using this link: ${link}`,
+      text: `You have received a shared document. Access it using this link: ${docLink}`,
       html: `
         <p>You have received a shared document:</p>
-        <a href="${link}" style="color: blue; text-decoration: underline;">View Document</a>
+        <a href="${docLink}" style="color: blue; text-decoration: underline;">View Document</a>
       `,
     };
 
